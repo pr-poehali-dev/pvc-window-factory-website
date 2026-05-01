@@ -4,74 +4,50 @@
 
 @layer base {
   :root {
-    --background: 36 20% 97%;
-    --foreground: 24 10% 12%;
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
 
-    --card: 36 20% 97%;
-    --card-foreground: 24 10% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
 
-    --popover: 36 20% 97%;
-    --popover-foreground: 24 10% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 24 10% 12%;
-    --primary-foreground: 36 20% 97%;
+    --primary: 210 80% 38%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 35 25% 92%;
-    --secondary-foreground: 24 10% 12%;
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 220 15% 15%;
 
-    --muted: 35 15% 90%;
-    --muted-foreground: 24 8% 45%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 28 60% 52%;
+    --accent: 28 95% 54%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 35 20% 84%;
-    --input: 35 20% 84%;
-    --ring: 28 60% 52%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 210 80% 38%;
 
-    --radius: 0rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 36 20% 95%;
-    --sidebar-foreground: 24 10% 12%;
-    --sidebar-primary: 24 10% 12%;
-    --sidebar-primary-foreground: 36 20% 97%;
-    --sidebar-accent: 35 25% 92%;
-    --sidebar-accent-foreground: 24 10% 12%;
-    --sidebar-border: 35 20% 84%;
-    --sidebar-ring: 28 60% 52%;
-  }
+    --brand-blue: 210 80% 38%;
+    --brand-blue-dark: 215 85% 26%;
+    --brand-blue-mid: 208 75% 48%;
+    --brand-orange: 28 95% 54%;
+    --brand-gray: 210 10% 96%;
 
-  .dark {
-    --background: 24 12% 8%;
-    --foreground: 36 20% 93%;
-    --card: 24 12% 10%;
-    --card-foreground: 36 20% 93%;
-    --popover: 24 12% 10%;
-    --popover-foreground: 36 20% 93%;
-    --primary: 36 20% 93%;
-    --primary-foreground: 24 12% 8%;
-    --secondary: 24 10% 16%;
-    --secondary-foreground: 36 20% 93%;
-    --muted: 24 10% 16%;
-    --muted-foreground: 35 10% 55%;
-    --accent: 28 60% 52%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 36 20% 93%;
-    --border: 24 10% 18%;
-    --input: 24 10% 18%;
-    --ring: 28 60% 52%;
-    --sidebar-background: 24 12% 7%;
-    --sidebar-foreground: 36 20% 93%;
-    --sidebar-primary: 28 60% 52%;
+    --sidebar-background: 210 30% 96%;
+    --sidebar-foreground: 220 15% 15%;
+    --sidebar-primary: 210 80% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 24 10% 14%;
-    --sidebar-accent-foreground: 36 20% 93%;
-    --sidebar-border: 24 10% 16%;
-    --sidebar-ring: 28 60% 52%;
+    --sidebar-accent: 210 20% 90%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 210 20% 85%;
+    --sidebar-ring: 210 80% 38%;
   }
 }
 
@@ -79,50 +55,46 @@
   * {
     @apply border-border;
   }
-
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
-    font-family: "IBM Plex Sans", system-ui, sans-serif;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    font-family: "Oswald", sans-serif;
-    letter-spacing: 0.02em;
+    font-family: "Roboto", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
   }
 }
 
 @layer utilities {
-  .text-stroke {
-    -webkit-text-stroke: 1px currentColor;
-    color: transparent;
+  .brand-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(215, 85%, 26%) 0%,
+      hsl(210, 80%, 38%) 60%,
+      hsl(205, 72%, 52%) 100%
+    );
   }
-  .clip-diagonal {
-    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+  .btn-orange {
+    background: hsl(var(--brand-orange));
+    color: white;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+    text-decoration: none;
   }
-  .grid-lines {
-    background-image:
-      linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
+  .btn-orange:hover {
+    opacity: 0.88;
   }
-  .nav-link {
-    position: relative;
+  .card-hover {
+    transition: all 0.3s ease;
   }
-  .nav-link::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: hsl(var(--accent));
-    transition: width 0.3s ease;
-  }
-  .nav-link:hover::after,
-  .nav-link.active::after {
-    width: 100%;
+  .card-hover:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
   }
 }

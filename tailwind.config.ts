@@ -19,8 +19,8 @@ export default {
 			}
 		},
 		fontFamily: {
-			display: ['Oswald', 'Impact', 'sans-serif'],
-			body: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+			display: ['Roboto', 'sans-serif'],
+			body: ['Roboto', 'system-ui', 'sans-serif'],
 		},
 		extend: {
 			colors: {

@@ -1,219 +1,372 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Icon from "@/components/ui/icon";
-import { useEffect, useRef, useState } from "react";
 
-const IMG_HERO = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/526f4b56-663d-4060-8240-91fca14bf4ab.jpg";
+const IMG_HERO = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/88b9bec3-a545-4881-b7ed-71b7c3502611.jpg";
+const IMG_FAMILY = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/6f168601-0146-4668-b6f2-754fc64a947c.jpg";
+const IMG_INSTALL = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/12317182-b294-45e9-9c32-11fd45ece646.jpg";
 const IMG_FACTORY = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/09e86d2c-1ebc-4be7-a065-1cc2ab402c09.jpg";
-const IMG_WOOD = "https://cdn.poehali.dev/projects/1b01901c-70fd-4c51-bb39-94cd4186ef14/files/2a83f7a7-3928-4c7f-8db5-60a3a4afadba.jpg";
 
-function useReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return { ref, visible };
-}
-
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const { ref, visible } = useReveal();
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-}
-
-const stats = [
-  { value: "19", label: "лет на рынке" },
-  { value: "12K+", label: "объектов" },
-  { value: "48ч", label: "изготовление" },
-  { value: "5 лет", label: "гарантия" },
+const CATALOG = [
+  { id: 1, title: "Пластиковые окна", sub: "Профиль VEKA, KBE, Rehau", img: IMG_HERO, price: "от 4 200 ₽" },
+  { id: 2, title: "Балконы и лоджии", sub: "Холодное и тёплое остекление", img: IMG_FAMILY, price: "от 8 500 ₽" },
+  { id: 3, title: "Алюминиевые конструкции", sub: "Офисы, фасады, витражи", img: IMG_FACTORY, price: "от 12 000 ₽" },
+  { id: 4, title: "Входные двери", sub: "ПВХ и металлопластик", img: IMG_INSTALL, price: "от 9 800 ₽" },
+  { id: 5, title: "Мансардные окна", sub: "Velux, Fakro, собственное пр-во", img: IMG_HERO, price: "от 7 200 ₽" },
+  { id: 6, title: "Стеклопакеты", sub: "Однокамерные, двухкамерные, триплекс", img: IMG_FACTORY, price: "от 1 800 ₽" },
 ];
 
-const highlights = [
-  { icon: "Layers", title: "ПВХ системы", desc: "Профили VEKA и KBE — тепло, тишина, долговечность" },
-  { icon: "Box", title: "Алюминий", desc: "Системы Schüco и ALUTECH для больших проёмов" },
-  { icon: "TreePine", title: "Дерево", desc: "Евроокна из массива дуба, сосны, лиственницы" },
+const WHY = [
+  { icon: "Factory", title: "Собственное производство", desc: "Завод площадью 5 000 м² в Ростове-на-Дону. Не перекупщики." },
+  { icon: "BadgeCheck", title: "Гарантия 5 лет", desc: "Официальная гарантия на все изделия и монтажные работы." },
+  { icon: "Timer", title: "Срок от 3 дней", desc: "Стандартные размеры — за 3 дня. Нестандарт — по договору." },
+  { icon: "Percent", title: "Скидки до 40%", desc: "Акции, сезонные предложения и скидки постоянным клиентам." },
+  { icon: "ThumbsUp", title: "12 000 клиентов", desc: "С нами уже работали тысячи семей и организаций в ЮФО." },
+  { icon: "Wrench", title: "Монтаж под ключ", desc: "Замер, доставка, установка, отделка откосов — всё включено." },
 ];
+
+const STEPS = [
+  { num: "1", icon: "Phone", title: "Звонок или заявка", desc: "Позвоните нам или оставьте заявку на сайте" },
+  { num: "2", icon: "Ruler", title: "Бесплатный замер", desc: "Выезд специалиста в день обращения" },
+  { num: "3", icon: "FileText", title: "Расчёт и договор", desc: "Точный расчёт, заключаем договор" },
+  { num: "4", icon: "Hammer", title: "Производство", desc: "Изготовление на нашем заводе" },
+  { num: "5", icon: "CheckCircle", title: "Монтаж и сдача", desc: "Установка и проверка качества" },
+];
+
+const REVIEWS = [
+  { name: "Ирина К.", rating: 5, text: "Заменили все окна в квартире. Очень довольны качеством и скоростью работы. Мастера аккуратные, убрали за собой. Рекомендую!", date: "15 марта 2024" },
+  { name: "Сергей М.", rating: 5, text: "Застеклили балкон. Сделали быстро, цена вышла ниже, чем у конкурентов. Качество хорошее, тепло держит отлично.", date: "2 февраля 2024" },
+  { name: "Людмила Н.", rating: 5, text: "Обращаюсь уже второй раз. В первый раз ставили пластиковые окна, теперь входную дверь. Всё чётко, без накладок.", date: "10 января 2024" },
+];
+
+const BRANDS = ["VEKA", "KBE", "Rehau", "Schüco", "Fakro", "Velux", "AGC", "Guardian"];
+
+const FORM_TOPICS = ["Пластиковые окна", "Балкон/лоджия", "Алюминий", "Входная дверь", "Другое"];
 
 export default function Home() {
+  const [formTopic, setFormTopic] = useState("Пластиковые окна");
+  const [formSent, setFormSent] = useState(false);
+
   return (
     <div>
       {/* HERO */}
-      <section className="relative min-h-[calc(100vh-70px)] flex items-end overflow-hidden grid-lines">
-        <div className="absolute inset-0 z-0">
-          <img src={IMG_HERO} alt="Fenestra" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent" />
-        </div>
-
-        {/* Diagonal accent line */}
-        <div className="absolute top-0 right-1/3 w-px h-full bg-border/60 z-0" />
-
-        <div className="relative z-10 max-w-screen-xl mx-auto px-6 lg:px-10 pb-16 pt-20 w-full">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-px w-12 bg-accent" />
-              <span className="text-accent text-xs font-medium tracking-[0.3em] uppercase">Производитель с 2005 года</span>
+      <section className="relative bg-gray-900 overflow-hidden">
+        <img src={IMG_HERO} alt="Окна" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+          {/* LEFT */}
+          <div>
+            <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/40 text-blue-300 text-xs font-medium px-3 py-1.5 rounded-full mb-5">
+              <Icon name="MapPin" size={12} />
+              Ростов-на-Дону • Завод-производитель
             </div>
-            <h1 className="font-display text-6xl md:text-8xl font-bold uppercase leading-none mb-6 text-foreground">
-              Окна,<br />
-              <span className="text-stroke" style={{ WebkitTextStroke: "2px hsl(var(--foreground))" }}>которые</span><br />
-              <span className="text-accent">живут</span><br />
-              в деталях
+            <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight mb-5">
+              Пластиковые окна<br />
+              <span className="text-blue-400">прямо с завода</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-sm leading-relaxed mb-10">
-              Производим оконные системы, которые сочетают инженерную точность с эстетикой
+            <p className="text-gray-300 text-base leading-relaxed mb-7 max-w-lg">
+              Донская оконная компания — производство и установка окон с 2005 года. Собственный завод, гарантия 5 лет, монтаж под ключ.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/products"
-                className="flex items-center gap-2 bg-foreground text-background text-xs font-medium tracking-widest uppercase px-8 py-4 hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                Каталог продукции
-                <Icon name="ArrowRight" size={14} />
+            <div className="flex flex-wrap gap-3 mb-8">
+              <Link to="/products" className="btn-orange">
+                <Icon name="Package" size={16} />
+                Выбрать окна
               </Link>
-              <Link
-                to="/contacts"
-                className="flex items-center gap-2 border border-foreground/30 text-foreground text-xs font-medium tracking-widest uppercase px-8 py-4 hover:border-foreground transition-colors"
-              >
-                Бесплатный замер
+              <Link to="/contacts" className="flex items-center gap-2 bg-white text-gray-900 font-semibold px-6 py-3 rounded hover:bg-gray-100 transition-colors">
+                <Icon name="Phone" size={16} />
+                Заказать замер
               </Link>
+            </div>
+            <div className="flex flex-wrap gap-5">
+              {[
+                { icon: "Shield", text: "Гарантия 5 лет" },
+                { icon: "Star", text: "4.9 / 5 рейтинг" },
+                { icon: "Users", text: "12 000+ клиентов" },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-2 text-sm text-gray-400">
+                  <Icon name={item.icon} size={15} className="text-blue-400" />
+                  {item.text}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Stats bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 bg-foreground/95 backdrop-blur-sm">
-          <div className="max-w-screen-xl mx-auto px-6 lg:px-10 grid grid-cols-2 md:grid-cols-4 divide-x divide-background/10">
-            {stats.map((s) => (
-              <div key={s.value} className="py-5 px-6 text-background">
-                <div className="font-display text-3xl font-bold text-accent">{s.value}</div>
-                <div className="text-background/50 text-xs uppercase tracking-wider mt-1">{s.label}</div>
+          {/* QUICK FORM */}
+          <div className="bg-white rounded-xl shadow-2xl p-6 md:p-8">
+            {formSent ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Icon name="CheckCircle" size={32} className="text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Заявка отправлена!</h3>
+                <p className="text-muted-foreground text-sm">Перезвоним в течение 30 минут</p>
+                <button onClick={() => setFormSent(false)} className="mt-5 text-primary text-sm underline">
+                  Отправить ещё одну
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-xl font-bold mb-1">Рассчитать стоимость</h3>
+                <p className="text-muted-foreground text-sm mb-5">Бесплатный замер и точный расчёт</p>
+
+                <div className="mb-4">
+                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Что вас интересует?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {FORM_TOPICS.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setFormTopic(t)}
+                        className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${
+                          formTopic === t
+                            ? "bg-primary text-white border-primary"
+                            : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <form onSubmit={(e) => { e.preventDefault(); setFormSent(true); }} className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Ваше имя"
+                    required
+                    className="w-full border border-border rounded px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                    className="w-full border border-border rounded px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Ваш адрес (для замера)"
+                    className="w-full border border-border rounded px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <button type="submit" className="btn-orange w-full justify-center text-sm py-3.5">
+                    <Icon name="Send" size={16} />
+                    Получить расчёт бесплатно
+                  </button>
+                  <p className="text-[11px] text-muted-foreground text-center">
+                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                  </p>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* PROMO STRIP */}
+      <div className="brand-gradient text-white py-3">
+        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 md:gap-12 text-sm font-medium">
+          {["🎁 Скидка 15% при заказе от 3 окон", "⚡ Замер в день обращения", "🚚 Доставка бесплатно", "🛡 Гарантия 5 лет"].map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* CATALOG */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-end justify-between mb-8 gap-4">
+            <div>
+              <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Ассортимент</p>
+              <h2 className="text-3xl font-bold">Каталог продукции</h2>
+            </div>
+            <Link to="/products" className="text-primary text-sm font-medium hover:underline flex items-center gap-1 flex-shrink-0">
+              Весь каталог <Icon name="ArrowRight" size={14} />
+            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {CATALOG.map((item) => (
+              <Link
+                key={item.id}
+                to="/products"
+                className="bg-white rounded-lg overflow-hidden border border-border card-hover group"
+              >
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400" />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-bold text-base mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-3">{item.sub}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-primary font-bold text-lg">{item.price}</span>
+                    <span className="text-xs text-primary font-medium border border-primary/30 px-3 py-1 rounded-full">Подробнее</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHY US */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Преимущества</p>
+            <h2 className="text-3xl font-bold">Почему выбирают нас</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {WHY.map((item, i) => (
+              <div key={i} className="bg-white border border-border rounded-lg p-6 card-hover">
+                <div className="w-12 h-12 brand-gradient rounded-lg flex items-center justify-center mb-4">
+                  <Icon name={item.icon} size={22} className="text-white" />
+                </div>
+                <h3 className="font-bold text-base mb-2">{item.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* MATERIALS */}
-      <section className="py-24 max-w-screen-xl mx-auto px-6 lg:px-10">
-        <Reveal>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="h-px w-10 bg-accent" />
-            <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Материалы</span>
-          </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold uppercase mb-16">
-            Три линейки <br />продукции
-          </h2>
-        </Reveal>
-
-        <div className="grid md:grid-cols-3 gap-px bg-border">
-          {highlights.map((h, i) => (
-            <Reveal key={i} delay={i * 100} className="bg-background p-10 group hover:bg-secondary transition-colors">
-              <div className="w-12 h-12 border-2 border-border group-hover:border-accent flex items-center justify-center mb-8 transition-colors">
-                <Icon name={h.icon} size={20} className="text-muted-foreground group-hover:text-accent transition-colors" />
-              </div>
-              <h3 className="font-display text-2xl font-semibold uppercase mb-3">{h.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-6">{h.desc}</p>
-              <Link to="/products" className="text-xs font-medium tracking-widest uppercase text-accent flex items-center gap-2 group-hover:gap-3 transition-all">
-                Смотреть <Icon name="ArrowRight" size={13} />
-              </Link>
-            </Reveal>
+      {/* STATS BANNER */}
+      <section className="brand-gradient text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { num: "19", unit: "лет", label: "на рынке" },
+            { num: "12 000", unit: "+", label: "выполненных заказов" },
+            { num: "5 000", unit: "м²", label: "площадь завода" },
+            { num: "5", unit: "лет", label: "гарантия" },
+          ].map((s, i) => (
+            <div key={i}>
+              <div className="text-4xl font-bold">{s.num}<span className="text-2xl text-blue-200">{s.unit}</span></div>
+              <div className="text-blue-200 text-sm mt-1">{s.label}</div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* FACTORY SECTION */}
-      <section className="bg-foreground text-background overflow-hidden">
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 grid md:grid-cols-2 gap-0">
-          <Reveal className="py-20 flex flex-col justify-center pr-0 md:pr-16">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px w-10 bg-accent" />
-              <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Производство</span>
-            </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold uppercase leading-tight mb-6">
-              8 000 м²<br />
-              <span className="text-background/40">собственного</span><br />
-              завода
-            </h2>
-            <p className="text-background/60 text-sm leading-relaxed mb-8 max-w-sm">
-              Полный производственный цикл — от нарезки профиля до финального контроля качества. 12 ступеней проверки каждого изделия.
-            </p>
-            <Link
-              to="/about"
-              className="flex items-center gap-2 text-accent text-xs font-medium tracking-widest uppercase hover:gap-4 transition-all w-fit"
-            >
-              О компании <Icon name="ArrowRight" size={14} />
-            </Link>
-          </Reveal>
-          <div className="relative min-h-[400px] overflow-hidden">
-            <img src={IMG_FACTORY} alt="Производство" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-foreground/20" />
+      {/* HOW WE WORK */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Процесс</p>
+            <h2 className="text-3xl font-bold">Как мы работаем</h2>
           </div>
-        </div>
-      </section>
-
-      {/* PRODUCT PREVIEW */}
-      <section className="py-24 max-w-screen-xl mx-auto px-6 lg:px-10">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <Reveal>
-            <img src={IMG_WOOD} alt="Качество профиля" className="w-full aspect-[4/3] object-cover" />
-          </Reveal>
-          <Reveal delay={150}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px w-10 bg-accent" />
-              <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Качество</span>
-            </div>
-            <h2 className="font-display text-4xl font-bold uppercase leading-tight mb-6">
-              Каждый профиль —<br />инженерное решение
-            </h2>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-              Используем только сертифицированные профильные системы ведущих европейских производителей. Собственное производство стеклопакетов позволяет контролировать качество на каждом этапе.
-            </p>
-            <div className="grid grid-cols-2 gap-4 mb-10">
-              {["ГОСТ Р 23166", "ISO 9001:2015", "VEKA Партнёр", "Schüco Dealer"].map((cert) => (
-                <div key={cert} className="flex items-center gap-3 text-sm font-medium">
-                  <div className="w-5 h-5 bg-accent/10 flex items-center justify-center flex-shrink-0">
-                    <Icon name="Check" size={11} className="text-accent" />
+          <div className="relative">
+            <div className="hidden md:block absolute top-8 left-[12%] right-[12%] h-0.5 bg-primary/20" />
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 relative z-10">
+              {STEPS.map((step, i) => (
+                <div key={i} className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 brand-gradient rounded-full flex items-center justify-center mb-3 shadow-lg">
+                    <Icon name={step.icon} size={24} className="text-white" />
                   </div>
-                  {cert}
+                  <div className="text-2xl font-bold text-primary mb-1">{step.num}</div>
+                  <h4 className="font-bold text-sm mb-1">{step.title}</h4>
+                  <p className="text-muted-foreground text-xs leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
-            <Link
-              to="/products"
-              className="bg-accent text-accent-foreground text-xs font-medium tracking-widest uppercase px-8 py-4 inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
-            >
-              Весь каталог <Icon name="ArrowRight" size={14} />
-            </Link>
-          </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-accent text-accent-foreground py-20">
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold uppercase leading-tight">
-              Бесплатный замер<br />в течение 24 часов
-            </h2>
-            <p className="text-accent-foreground/70 mt-3 text-sm">Выезд специалиста, расчёт стоимости, консультация</p>
+      {/* REVIEWS */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Отзывы</p>
+              <h2 className="text-3xl font-bold">Что говорят клиенты</h2>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="text-yellow-500 text-lg">★★★★★</span>
+              <span className="font-bold text-foreground text-base">4.9</span>
+              <span>/ 5 (812 отзывов)</span>
+            </div>
           </div>
-          <Link
-            to="/contacts"
-            className="flex-shrink-0 bg-accent-foreground text-accent text-sm font-semibold tracking-widest uppercase px-10 py-5 hover:opacity-90 transition-opacity whitespace-nowrap"
-          >
-            Записаться
-          </Link>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {REVIEWS.map((r, i) => (
+              <div key={i} className="bg-white border border-border rounded-lg p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 brand-gradient rounded-full flex items-center justify-center text-white font-bold text-sm">
+                      {r.name[0]}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">{r.name}</div>
+                      <div className="text-xs text-muted-foreground">{r.date}</div>
+                    </div>
+                  </div>
+                  <div className="text-yellow-500 text-sm">{"★".repeat(r.rating)}</div>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">{r.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BRANDS */}
+      <section className="py-10 border-t border-b border-border bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="text-center text-muted-foreground text-sm mb-6 uppercase tracking-wider font-medium">Работаем с ведущими брендами</p>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {BRANDS.map((brand) => (
+              <span key={brand} className="text-gray-400 font-bold text-lg hover:text-primary transition-colors cursor-default">{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY PREVIEW */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Наши работы</p>
+              <h2 className="text-3xl font-bold">Выполненные проекты</h2>
+            </div>
+            <Link to="/gallery" className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
+              Смотреть все <Icon name="ArrowRight" size={14} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[IMG_HERO, IMG_FAMILY, IMG_INSTALL, IMG_FACTORY].map((img, i) => (
+              <Link key={i} to="/gallery" className="group relative overflow-hidden rounded-lg aspect-square">
+                <img src={img} alt="Проект" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <Icon name="ZoomIn" size={28} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BOTTOM CTA */}
+      <section className="py-16 bg-primary text-white">
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Хотите узнать стоимость окон для вашей квартиры?
+            </h2>
+            <p className="text-blue-200 leading-relaxed mb-6">
+              Оставьте заявку — замерщик приедет бесплатно, сделает точные замеры и рассчитает итоговую стоимость. Никаких обязательств!
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/contacts" className="btn-orange">
+                <Icon name="Phone" size={16} />
+                Заказать замер
+              </Link>
+              <a href="tel:+78632001234" className="flex items-center gap-2 bg-white/10 border border-white/30 text-white font-semibold px-6 py-3 rounded hover:bg-white/20 transition-colors">
+                <Icon name="PhoneCall" size={16} />
+                +7 (863) 200-12-34
+              </a>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <img src={IMG_FAMILY} alt="Довольные клиенты" className="rounded-xl shadow-xl w-full aspect-[4/3] object-cover" />
+          </div>
         </div>
       </section>
     </div>

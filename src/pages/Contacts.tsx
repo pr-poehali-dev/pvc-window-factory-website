@@ -1,113 +1,112 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
-const contacts = [
-  { icon: "MapPin", label: "Адрес офиса", value: "г. Москва, ул. Производственная, д. 12", sub: "Ближайшее метро: Шоссе Энтузиастов" },
-  { icon: "Phone", label: "Телефон", value: "+7 (495) 123-45-67", sub: "Пн–Пт 9:00–18:00" },
-  { icon: "Mail", label: "Электронная почта", value: "info@fenestra.ru", sub: "Ответим в течение часа" },
-  { icon: "Factory", label: "Производство", value: "Московская обл., г. Химки, пр-т Мельникова, 8", sub: "Экскурсии по записи" },
-];
-
-const TOPICS = ["Заказать замер", "Расчёт стоимости", "Дилерство", "Индивидуальный заказ", "Другое"];
+const TOPICS = ["Заказать замер", "Расчёт стоимости", "Дилерство", "Жалоба/Претензия", "Другое"];
 
 export default function Contacts() {
-  const [topic, setTopic] = useState(TOPICS[0]);
+  const [topic, setTopic] = useState("Заказать замер");
   const [sent, setSent] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSent(true);
-  };
 
   return (
     <div>
-      {/* HEADER */}
-      <section className="py-24 bg-foreground text-background relative overflow-hidden">
-        <div className="absolute inset-0 grid-lines opacity-10" />
-        <div className="relative z-10 max-w-screen-xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-px w-10 bg-accent" />
-            <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Связь</span>
-          </div>
-          <h1 className="font-display text-6xl md:text-7xl font-bold uppercase">Контакты</h1>
+      <div className="bg-gray-50 border-b border-border py-3">
+        <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <Link to="/" className="hover:text-primary transition-colors">Главная</Link>
+          <span>/</span>
+          <span className="text-foreground">Контакты</span>
+        </div>
+      </div>
+
+      <section className="brand-gradient text-white py-14">
+        <div className="max-w-7xl mx-auto px-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">Контакты</h1>
+          <p className="text-blue-200 text-lg">Свяжитесь с нами удобным способом</p>
         </div>
       </section>
 
-      <section className="py-20 max-w-screen-xl mx-auto px-6 lg:px-10">
-        <div className="grid lg:grid-cols-2 gap-16">
-          {/* CONTACTS INFO */}
-          <div>
-            <div className="space-y-6 mb-12">
-              {contacts.map((c, i) => (
-                <div key={i} className="flex gap-5 p-6 border border-border hover:border-accent transition-colors group">
-                  <div className="w-12 h-12 border-2 border-border group-hover:border-accent flex items-center justify-center flex-shrink-0 transition-colors">
-                    <Icon name={c.icon} size={18} className="text-muted-foreground group-hover:text-accent transition-colors" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{c.label}</p>
-                    <p className="font-medium text-sm">{c.value}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{c.sub}</p>
-                  </div>
-                </div>
-              ))}
+      <section className="py-14 max-w-7xl mx-auto px-4">
+        <div className="grid lg:grid-cols-3 gap-8">
+
+          {/* INFO */}
+          <div className="lg:col-span-1 space-y-5">
+            <div>
+              <h2 className="text-2xl font-bold mb-5">Наши контакты</h2>
             </div>
 
-            {/* WORKING HOURS */}
-            <div className="bg-secondary p-8">
-              <h3 className="font-display text-xl font-bold uppercase mb-6">Режим работы</h3>
-              <div className="space-y-3">
-                {[
-                  { day: "Пн–Пт", time: "09:00 – 18:00" },
-                  { day: "Суббота", time: "10:00 – 15:00" },
-                  { day: "Воскресенье", time: "Выходной" },
-                ].map((row, i) => (
-                  <div key={i} className="flex items-center justify-between text-sm border-b border-border pb-3 last:border-0 last:pb-0">
-                    <span className="font-medium">{row.day}</span>
-                    <span className={row.time === "Выходной" ? "text-muted-foreground" : "text-accent font-medium"}>{row.time}</span>
-                  </div>
-                ))}
+            {[
+              { icon: "Phone", label: "Телефон", value: "+7 (863) 200-12-34", sub: "Бесплатный звонок", href: "tel:+78632001234" },
+              { icon: "Phone", label: "Дополнительный", value: "+7 (863) 200-12-35", sub: "", href: "tel:+78632001235" },
+              { icon: "Mail", label: "Email", value: "info@don-okna.ru", sub: "Ответим за 1 час", href: "mailto:info@don-okna.ru" },
+              { icon: "MapPin", label: "Офис и шоурум", value: "Ростов-на-Дону, ул. Станиславского, 8", sub: "Показываем образцы", href: undefined },
+              { icon: "Factory", label: "Производство", value: "г. Ростов-на-Дону, ул. Нансена, 40/34", sub: "Экскурсии по записи", href: undefined },
+            ].map((c, i) => (
+              <div key={i} className="flex gap-4 p-4 bg-gray-50 border border-border rounded-lg">
+                <div className="w-10 h-10 brand-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Icon name={c.icon} size={17} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-0.5">{c.label}</p>
+                  {c.href ? (
+                    <a href={c.href} className="font-semibold text-sm hover:text-primary transition-colors">{c.value}</a>
+                  ) : (
+                    <p className="font-semibold text-sm">{c.value}</p>
+                  )}
+                  {c.sub && <p className="text-xs text-muted-foreground mt-0.5">{c.sub}</p>}
+                </div>
               </div>
+            ))}
+
+            <div className="p-5 bg-primary/5 border border-primary/20 rounded-lg">
+              <h4 className="font-bold mb-3 flex items-center gap-2">
+                <Icon name="Clock" size={16} className="text-primary" />
+                Режим работы
+              </h4>
+              {[
+                { day: "Понедельник–Пятница", time: "8:00–19:00" },
+                { day: "Суббота", time: "9:00–17:00" },
+                { day: "Воскресенье", time: "Выходной" },
+              ].map((row, i) => (
+                <div key={i} className="flex justify-between text-sm py-2 border-b border-border/60 last:border-0 last:pb-0">
+                  <span>{row.day}</span>
+                  <span className={row.time === "Выходной" ? "text-muted-foreground" : "text-primary font-semibold"}>{row.time}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* FORM */}
-          <div>
+          <div className="lg:col-span-2 bg-white border border-border rounded-xl p-8 shadow-sm">
             {sent ? (
-              <div className="h-full flex flex-col items-center justify-center text-center py-20 border-2 border-accent">
-                <div className="w-16 h-16 bg-accent/10 flex items-center justify-center mb-6">
-                  <Icon name="CheckCircle" size={32} className="text-accent" />
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                  <Icon name="CheckCircle" size={36} className="text-green-600" />
                 </div>
-                <h3 className="font-display text-3xl font-bold uppercase mb-3">Заявка отправлена</h3>
-                <p className="text-muted-foreground text-sm max-w-xs leading-relaxed mb-8">
-                  Мы получили вашу заявку и перезвоним в течение 30 минут в рабочее время
-                </p>
+                <h3 className="text-2xl font-bold mb-3">Заявка принята!</h3>
+                <p className="text-muted-foreground mb-2">Мы получили вашу заявку и свяжемся</p>
+                <p className="text-muted-foreground font-semibold">в течение 30 минут в рабочее время</p>
                 <button
                   onClick={() => setSent(false)}
-                  className="text-xs font-medium tracking-widest uppercase text-accent border border-accent px-6 py-3 hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="mt-8 text-primary text-sm font-medium underline"
                 >
-                  Отправить ещё
+                  Отправить ещё одну заявку
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="border-b border-border pb-6 mb-2">
-                  <h2 className="font-display text-3xl font-bold uppercase mb-2">Оставьте заявку</h2>
-                  <p className="text-muted-foreground text-sm">Ответим в течение 30 минут в рабочее время</p>
-                </div>
+              <>
+                <h2 className="text-2xl font-bold mb-2">Оставьте заявку</h2>
+                <p className="text-muted-foreground text-sm mb-7">Перезвоним в течение 30 минут</p>
 
-                {/* TOPIC SELECT */}
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3 font-medium">Тема обращения</p>
+                <div className="mb-6">
+                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-3">Тема обращения</label>
                   <div className="flex flex-wrap gap-2">
                     {TOPICS.map((t) => (
                       <button
-                        type="button"
                         key={t}
+                        type="button"
                         onClick={() => setTopic(t)}
-                        className={`text-xs px-4 py-2 border font-medium transition-all ${
-                          topic === t
-                            ? "bg-foreground text-background border-foreground"
-                            : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                        className={`text-sm px-4 py-2 rounded-full border font-medium transition-all ${
+                          topic === t ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary hover:text-primary"
                         }`}
                       >
                         {t}
@@ -116,69 +115,54 @@ export default function Contacts() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Имя *</label>
-                    <input
-                      required
-                      type="text"
-                      placeholder="Иван Иванов"
-                      className="w-full border border-border focus:border-foreground bg-transparent px-4 py-3 text-sm outline-none transition-colors"
-                    />
+                <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Имя *</label>
+                      <input required type="text" placeholder="Иван Иванов" className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Телефон *</label>
+                      <input required type="tel" placeholder="+7 (863) ___-__-__" className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" />
+                    </div>
                   </div>
                   <div>
-                    <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Телефон *</label>
-                    <input
-                      required
-                      type="tel"
-                      placeholder="+7 (___) ___-__-__"
-                      className="w-full border border-border focus:border-foreground bg-transparent px-4 py-3 text-sm outline-none transition-colors"
-                    />
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Email</label>
+                    <input type="email" placeholder="ivan@example.ru" className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" />
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Email</label>
-                  <input
-                    type="email"
-                    placeholder="ivan@company.ru"
-                    className="w-full border border-border focus:border-foreground bg-transparent px-4 py-3 text-sm outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Сообщение</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Опишите ваш запрос подробнее..."
-                    className="w-full border border-border focus:border-foreground bg-transparent px-4 py-3 text-sm outline-none transition-colors resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-accent text-accent-foreground text-xs font-bold tracking-widest uppercase py-5 hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-                >
-                  Отправить заявку <Icon name="ArrowRight" size={14} />
-                </button>
-
-                <p className="text-xs text-muted-foreground text-center">
-                  Нажимая кнопку, вы соглашаетесь с{" "}
-                  <span className="underline cursor-pointer hover:text-foreground">политикой конфиденциальности</span>
-                </p>
-              </form>
+                  <div>
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Адрес объекта</label>
+                    <input type="text" placeholder="г. Ростов-на-Дону, ул. ..." className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-2">Сообщение</label>
+                    <textarea rows={4} placeholder="Опишите ваш запрос..." className="w-full border border-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors resize-none" />
+                  </div>
+                  <button type="submit" className="btn-orange w-full justify-center text-base py-4">
+                    <Icon name="Send" size={18} />
+                    Отправить заявку
+                  </button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Нажимая кнопку, вы соглашаетесь с <span className="underline cursor-pointer">политикой конфиденциальности</span>
+                  </p>
+                </form>
+              </>
             )}
           </div>
         </div>
       </section>
 
-      {/* MAP PLACEHOLDER */}
-      <section className="h-72 bg-secondary flex items-center justify-center border-t border-border relative overflow-hidden">
-        <div className="absolute inset-0 grid-lines" />
-        <div className="relative z-10 text-center">
-          <Icon name="MapPin" size={32} className="text-accent mx-auto mb-3" />
-          <p className="font-display text-xl font-bold uppercase">Москва, ул. Производственная, 12</p>
-          <p className="text-muted-foreground text-sm mt-2">Карта загрузится после интеграции</p>
+      {/* MAP */}
+      <section className="h-64 bg-gray-100 border-t border-border flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg,#bcd 0,#bcd 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,#bcd 0,#bcd 1px,transparent 1px,transparent 60px)" }} />
+        <div className="relative text-center z-10">
+          <Icon name="MapPin" size={40} className="text-primary mx-auto mb-3" />
+          <p className="font-bold text-xl">г. Ростов-на-Дону, ул. Станиславского, 8</p>
+          <p className="text-muted-foreground text-sm mt-1">Шоурум и офис компании • рядом с центром города</p>
+          <a href="https://yandex.ru/maps" target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 btn-orange text-sm">
+            <Icon name="Navigation" size={14} />
+            Открыть на карте
+          </a>
         </div>
       </section>
     </div>
