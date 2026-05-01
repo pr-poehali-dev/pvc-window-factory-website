@@ -19,8 +19,8 @@ export default {
 			}
 		},
 		fontFamily: {
-			display: ['Cormorant', 'Georgia', 'serif'],
-			body: ['Golos Text', 'system-ui', 'sans-serif'],
+			display: ['Oswald', 'Impact', 'sans-serif'],
+			body: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
 		},
 		extend: {
 			colors: {
